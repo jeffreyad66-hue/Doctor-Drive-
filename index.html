@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Driving Game</title>
+  <link rel="stylesheet" href="style.css">
+   <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="app">
+
+      <div id="loadingScreen" class="screen">
+        <div class="loading-box">
+          <img class="game-title" src="assets/game logo.png" alt="">
+          <div class="loading-bar">
+            <div id="loadingProgress"></div>
+          </div>
+          
+          <button id="startGameBtn" class="hidden">Tap to Start</button>
+        </div>
+      </div>
+
+        <!--intro screen-->
+        <div id="introScreen" class="screen hidden">
+          <video id="introVideo">
+            <source src="assets/intro.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div id="garageScreen" class="game-overlay hidden">
+          <div class="popup-garage">
+            <h2 class="name">Garage</h2>
+            <div id="garageCoins">Coins: 0</div>
+            <div id="garageList" class="garage-list"></div>
+            <button onclick="closeGarage()">Back</button>
+          </div>
+        </div>
+        
+        
+       <div id="scoreScreen" class="score-screen hidden">
+         <div class="score-card">
+           
+            <h1>🏆 HIGH SCORE</h1>
+            
+            <div id="highScoreText" class="score-value">0</div>
+            
+            <button class="menu-btn" onclick="closeScoreScreen()">BACK</button>
+            </div>
+           </div>
+
+
+        <!-- MAIN MENU -->
+        <div id="menuScreen" class="game-overlay hidden">
+          <div class="menu-content">
+            <img class="game-title" src="assets/game logo.png" alt="">
+
+            <button onclick="startGame()">PLAY</button>
+            <button onclick="openChallenges()">CHALLENGES</button>
+            <button onclick="openGarage()">GARAGE</button>
+            <button onclick="openScoreScreen()">SCORE</button>
+            <button id="howToBtn">HOW TO PLAY</button>
+          </div>
+        </div>
+
+        <!-- CHALLENGES SCREEN -->
+        <div id="challengesScreen" class="overlay hidden">
+          <div class="challenges-box">
+            <h2>CHALLENGES</h2>
+
+            <div class="challenge-grid">
+              <div class="challenge-card" onclick="startTimeRace()">
+                <img src="assets/time-race.png">
+                <h3>Time Race</h3>
+                <p>Reach the finish line before time runs out.</p>
+              </div>
+
+              <div class="challenge-card" onclick="startPoliceCatchThief()">
+                <img src="assets/police-thief.png">
+                <h3>Police Catch Thief</h3>
+                <p>Escape the police before they catch you.</p>
+              </div>
+            </div>
+
+            <button class="close-btn" onclick="closeChallenges()">BACK</button>
+          </div>
+        </div>
+
+
+            <!-- TIME RACE SCREEN -->
+        <div id="timeRaceScreen" class="screen hidden">
+            <canvas id="timeRaceCanvas" width="400" height="600"></canvas>
+
+            <!-- Countdown -->
+            <div id="countdown" class="countdown hidden"></div>
+
+            <!-- Timer -->
+            <div class="race-timer">
+              Time: <span id="raceTime">60</span>s
+            </div>
+
+            <!-- Finish Message -->
+            <div id="raceResult" class="race-result hidden"></div>
+          
+          <!-- Mobile Controls -->
+             <div id="driveControls" class="mobile-controls hidden">
+              <div class="control-group horizontal">
+                <button id="dcLeft">◀</button>
+                <button id="dcRight">▶</button>
+              </div>
+              
+              <div class="control-group vertical">
+                <button id="dcUp">▲</button>
+                <button id="dcDown">▼</button>
+              </div>
+            </div>
+
+            <!-- PAUSE BUTTON -->
+            <button id="pauseBtn" onclick="togglePause()" class="pause-btn">⏸</button>
+
+        </div>
+
+
+        <!-- POLICE CATCH THIEF SCREEN -->
+        <div id="policeScreen" class="screen hidden">
+          
+          <!-- Game Canvas -->
+           <canvas id="policeCanvas" width="400" height="600"></canvas>
+           
+           <!-- Countdown -->
+            <div id="policeCountdown" class="countdown hidden"></div>
+            
+            <!-- Result -->
+            <div id="policeResult" class="race-result hidden">
+             <h2 id="policeResultText"></h2>
+             
+             <p id="policeRewardText"></p>
+             
+             <div class="result-buttons">
+              <button onclick="restartPoliceCatchThief()">Restart</button>
+                <button onclick="goToMenu()">Menu</button>
+              </div>
+            </div>
+            
+            <!-- Pause Button -->
+             <button id="policePauseBtn" onclick="togglePolicePause()">⏸</button>
+             
+             <!-- Pause Menu -->
+              <div id="policePauseMenu" class="hidden">
+                
+                <h2>Paused</h2>
+                
+                <button onclick="resumePoliceGame()">Resume</button>
+                <button onclick="restartPoliceCatchThief()">Restart</button>
+                <button onclick="goToMenu()">Menu</button>
+              </div>
+
+            <!-- Mobile Controls -->
+             <div id="policeControls" class="mobile-controls hidden">
+              <div class="control-group horizontal">
+                <button id="pcLeft">◀</button>
+                <button id="pcRight">▶</button>
+              </div>
+              
+              <div class="control-group vertical">
+                <button id="pcUp">▲</button>
+                <button id="pcDown">▼</button>
+              </div>
+            </div>
+          </div>
+
+  
+        <!-- HOW TO PLAY SCREEN -->
+        <div id="howToScreen" class="game-overlay hidden">
+            <img src="assets/how-to-play.png" class="how-to-img">
+            <button class="back-btn" onclick="closeHowTo()">BACK</button>
+        </div>
+    
+        <div class="game-container">
+            <!-- Canvas for the game -->
+              <canvas id="gameCanvas" width="400" height="600"></canvas>
+              
+              <!-- HUD -->
+                <div class="hud">
+                  <span id="speed">Speed: 0</span>
+                  <span id="score">Distance: 0</span>
+                  <span id="raceTimer" class="hidden">Time: 30</span>
+                  <span id="raceStatus" class="hidden"></span>
+              </div>
+
+              <!-- Mobile Controls -->
+             <div id="driveGameControls" class="mobile-controls ">
+              <div class="control-group horizontal">
+                <button id="dgLeft">◀</button>
+                <button id="dgRight">▶</button>
+              </div>
+              
+              <div class="control-group vertical">
+                <button id="dgUp">▲</button>
+                <button id="dgDown">▼</button>
+              </div>
+              
+            </div>
+            
+                <!-- PAUSE POPUP -->
+            <div id="pauseOverlay" class="pause-overlay hidden">
+            
+                  <h2>Game Paused</h2>
+                  <button onclick="resumeGame()">Resume</button>
+                  <button onclick="restartPausedGame()">Restart</button>
+                  <button onclick="goToMenu()">Menu</button>
+            </div>
+
+            <!-- PAUSE BUTTON -->
+            <button id="pauseBtn" onclick="togglePause()" class="pause-btn">⏸</button>
+         
+          </div>
+    </div>
+
+
+        <!-- TIME RACE RESULT POPUP -->
+    <div id="raceResultPopup" class="overlay hidden">
+        <div class="popup">
+          <h2 id="raceResultTitle"></h2>
+          <p id="raceResultText"></p>
+
+          <div class="popup-buttons">
+            <button onclick="restartTimeRace()">Restart</button>
+            <button onclick="goToMenu()">Menu</button>
+          </div>
+        </div>
+    </div>
+    
+    
+    <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="overlay hidden">
+          <div class="popup">
+            <h2>Game Over</h2>
+            <p id="finalDistance"></p>
+            <p id="finalCoins"></p>
+            <button id="restartBtn">Restart</button>
+            <button onclick="goToMenu()">Menu</button>
+            
+          </div>
+        </div>
+
+
+    <div id="trPauseOverlay" class="pause-overlay hidden">
+          <div class="pause-box">
+            <h2>Game Paused</h2>
+            <button onclick="trResumeGame()">  Resume</button>
+            <button onclick="trRestartPausedGame()">Restart</button>
+            <button onclick="goToMenu()">Menu</button>
+          </div>
+    </div>
+
+    
+
+
+    <audio id="engineSound" src="assets/engine.mp3"loop></audio>
+    <audio id="crashSound" src="assets/crash.mp3"></audio>
+    <audio id="clickSound" src="assets/click.mp3"></audio>
+    <audio id="bgMenu" src="assets/menu.mp3" loop></audio>
+
+
+    
+      <!-- Game script -->
+      
+    <script src="policeCatchThief.js"></script>
+    <script src="script.js"></script>
+   
+  </body>
+</html>
